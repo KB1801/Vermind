@@ -5,7 +5,7 @@ Dispatches queries to optimal RAG patterns using native ML intent predictions.
 from typing import Dict, Any
 from backend.app.rag_patterns.base import BaseRAGPattern
 from backend.app.rag_patterns.naive_rag import naive_rag
-from backend.app.rag_patterns.retrieve_rerank import retrieve_rerank_rag
+from backend.app.rag_patterns.retrieve_rerank_rag import retrieve_rerank_rag
 from backend.app.rag_patterns.corrective_rag import corrective_rag
 from backend.app.rag_patterns.self_rag import self_rag
 from backend.app.rag_patterns.adaptive_rag import adaptive_rag

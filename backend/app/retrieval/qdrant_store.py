@@ -1,7 +1,7 @@
 """
 Native Qdrant Hybrid Vector Store with Server-Side RRF Fusion.
 Integrates Dense BGE-Small vectors + BM25 Sparse vectors + Reciprocal Rank Fusion.
-Guarded against empty sparse vector crash on stopword queries.
+Guarded against empty sparse vector crash on stopword queries and respects multi-tenant boundaries.
 """
 import uuid
 from typing import List, Dict, Any, Optional
@@ -55,7 +55,7 @@ class QdrantVectorStore:
 
     def upsert_chunks(self, chunks: List[Dict[str, Any]], tenant_id: str = "default_tenant") -> int:
         """
-        Upserts document chunks into Qdrant with tenant boundary filters.
+        Upserts document chunks into Qdrant or in-memory fallback with tenant boundary filters.
         """
         if not chunks:
             return 0
@@ -66,7 +66,7 @@ class QdrantVectorStore:
         points = []
         for idx, chunk in enumerate(chunks):
             point_id = str(uuid.uuid4())
-            payload = chunk.get("metadata", {})
+            payload = chunk.get("metadata", {}).copy()
             payload["text"] = chunk["text"]
             payload["tenant_id"] = tenant_id
             payload["doc_id"] = chunk.get("doc_id", "doc_unknown")
@@ -110,11 +110,11 @@ class QdrantVectorStore:
         Performs Hybrid Search using RRF (Reciprocal Rank Fusion) with multi-tenant isolation.
         """
         if not self.client:
-            return self._in_memory_keyword_search(query, top_k)
+            return self._in_memory_keyword_search(query, top_k, tenant_id=tenant_id)
 
         dense_vecs, sparse_vecs = unified_embedder.embed_queries([query])
         if not dense_vecs:
-            return self._in_memory_keyword_search(query, top_k)
+            return self._in_memory_keyword_search(query, top_k, tenant_id=tenant_id)
 
         tenant_filter = models.Filter(
             must=[
@@ -155,7 +155,7 @@ class QdrantVectorStore:
 
         except Exception as e:
             logger.error(f"Qdrant Hybrid Search error: {str(e)}. Triggering in-memory fallback...")
-            return self._in_memory_keyword_search(query, top_k)
+            return self._in_memory_keyword_search(query, top_k, tenant_id=tenant_id)
 
     def _apply_rrf_fusion(self, dense_hits, sparse_hits, top_k: int, k_factor: int = 60) -> List[Dict[str, Any]]:
         scores = {}
@@ -187,10 +187,15 @@ class QdrantVectorStore:
             })
         return results
 
-    def _in_memory_keyword_search(self, query: str, top_k: int) -> List[Dict[str, Any]]:
+    def _in_memory_keyword_search(self, query: str, top_k: int, tenant_id: str = "default_tenant") -> List[Dict[str, Any]]:
         q_words = set(query.lower().split())
         scored = []
         for cid, payload in self.in_memory_fallback.items():
+            # Enforce multi-tenant isolation boundary
+            p_tenant = payload.get("tenant_id", "default_tenant")
+            if p_tenant != tenant_id:
+                continue
+
             text = payload.get("text", "").lower()
             matches = sum(1 for w in q_words if w in text)
             if matches > 0 or not self.in_memory_fallback:

@@ -2,7 +2,7 @@
 Evidence Integrity Index (EII) Computation Engine.
 Calculates system-wide evidence trustworthiness scores across all decomposed answer claims.
 """
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Tuple
 from backend.app.schemas import ClaimVerificationResult
 from backend.app.verification.claim_decomposer import claim_decomposer
 from backend.app.verification.contradiction import contradiction_detector

@@ -4,7 +4,7 @@ Pytest Verification Suite for all 19 RAG Patterns & Auto-Router.
 import pytest
 from backend.app.rag_patterns.router import rag_router
 from backend.app.rag_patterns.naive_rag import naive_rag
-from backend.app.rag_patterns.retrieve_rerank import retrieve_rerank_rag
+from backend.app.rag_patterns.retrieve_rerank_rag import retrieve_rerank_rag
 from backend.app.rag_patterns.corrective_rag import corrective_rag
 from backend.app.rag_patterns.self_rag import self_rag
 

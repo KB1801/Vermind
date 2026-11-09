@@ -5,7 +5,7 @@ Appends output safely to data/feedback_log.jsonl without overwriting files.
 """
 import json
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, List
 from backend.app.core.logger import logger
 
 class FeedbackLoopManager:

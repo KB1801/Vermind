@@ -1,6 +1,11 @@
 """
-VeriMind Multimodal Package.
-"""
-from backend.app.multimodal.vision_processor import VisionProcessor
+VeriMind v2.2.0
+Multimodal Processing Package
 
-__all__ = ["VisionProcessor"]
+Supports multimodal document understanding,
+including image and vision-based processing.
+"""
+
+__version__ = "2.2.0"
+
+__all__ = []
