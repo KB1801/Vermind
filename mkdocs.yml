@@ -1,0 +1,11 @@
+site_name: VeriMind Documentation
+site_description: Enterprise Dual-Engine Hybrid RAG & Agentic AI Platform
+theme:
+  name: material
+  palette:
+    primary: indigo
+
+nav:
+  - Home: README.md
+  - Architecture: docs/adr/001-rag-router.md
+  - Benchmarks: docs/SCALED_BENCHMARK_RESULTS.md

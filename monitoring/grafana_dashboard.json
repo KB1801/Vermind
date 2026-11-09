@@ -1,0 +1,24 @@
+{
+  "annotations": { "list": [] },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 1,
+  "title": "VeriMind Platform Telemetry & Latency Dashboard",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Query Latency (ms)",
+      "type": "timeseries",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 }
+    },
+    {
+      "id": 2,
+      "title": "Evidence Integrity Index (EII)",
+      "type": "stat",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 }
+    }
+  ],
+  "schemaVersion": 38,
+  "version": 1
+}

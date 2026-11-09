@@ -1,0 +1,18 @@
+"""
+PyTorch Checkpoint Initialization script for I-JEPA Latent World Model.
+Saves model weights to data/models/ijepa_latent_world_model.pt.
+"""
+import torch
+from pathlib import Path
+from backend.app.evaluation.jepa_world_model import IJEPALatentWorldModel
+
+def init_ijepa_checkpoint():
+    path = Path("data/models/ijepa_latent_world_model.pt")
+    path.parent.mkdir(parents=True, exist_ok=True)
+    
+    model = IJEPALatentWorldModel()
+    torch.save(model.state_dict(), path)
+    print(f"✓ PyTorch I-JEPA checkpoint saved to {path}")
+
+if __name__ == "__main__":
+    init_ijepa_checkpoint()

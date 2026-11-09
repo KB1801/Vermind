@@ -1,0 +1,36 @@
+name: VeriMind Enterprise CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test-and-gate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.11"
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run Ruff Code Quality Linter
+      run: |
+        ruff check .
+
+    - name: Run Pytest Suite
+      run: |
+        pytest backend/tests/ -v --cov=backend/app --cov-report=term-missing
+
+    - name: Execute Regression Gate Policy Assertion
+      run: |
+        python backend/app/evaluation/regression_gate.py
